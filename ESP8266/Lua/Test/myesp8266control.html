@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>NodeMCU ESP8266 LED Control</title>
+	</head>
+	<body>
+	
+	<!-- In the <button> tags below the ID attribute is the value sent to the arduino -->
+	
+	<!-- Toggle 11 and 12 not doing anything at the moment... -->
+	<button id="1" class="led" data-state="on">LED 1 ON</button> <!-- button for pin 0 -->
+	<button id="1" class="led" data-state="off">LED 1 OFF</button> <!-- button for pin 0 -->
+	<button id="2" class="led" data-state="on">LED 2 ON</button> <!-- button for pin 4 -->
+	<button id="2" class="led" data-state="off">LED 2 OFF</button> <!-- button for pin 4 -->
+		
+	<script src="jquery.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$(".led").click(function(){
+			
+				var p = $(this).attr('id'); // Get id value
+				var state = $(this).attr('data-state');
+					
+				// This works with, on the arduino side: httpHeader = "HTTP/1.1 200 OK\r\nContent-Type: application/json; charset=UTF-8\r\n"; 
+			/*	$.ajax({
+					type: "GET", 
+					url: "http://192.168.1.19:80/",
+					data: {pin: state.toUpperCase() + p},
+					dataType: "json",
+					success: function(data) {
+						console.log("SUCCESS")
+						console.log(data);
+					},
+					error: function(data) {
+						console.log("ERROR");
+						console.log(data);
+					},
+					complete: function(data) {
+						console.log("COMPLETE");
+						console.log(data);
+					}
+				}); */
+				
+				
+				
+			/*	var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() { 
+					if (this.readyState == 4 && this.status == 200) { 
+						console.log(this.responseText);
+						// var obj = JSON.parse(this.responseText); 
+						// document.getElementById("ledStatus").innerHTML = obj.data[0].dataValue; 
+						// document.getElementById("ledStatus").innerHTML = obj.data[1].ledState; 
+					} 
+				};
+				
+				var endpointUrl = "http://192.168.1.19:80?pin=";
+				endpointUrl += state.toUpperCase() + p;
+				console.log(endpointUrl);
+				xhttp.open("GET", endpointUrl, true);
+				xhttp.send(); 
+				*/
+				
+				
+				// Has issues with CORS (cross-origin resource)
+			/*	$.ajax({
+					type: "POST", 
+					url: "http://192.168.1.19:80/",
+					data: JSON.stringify({pin: state.toUpperCase() + p}),
+					dataType: "json",
+					success: function(data) {
+						console.log("SUCCESS")
+						console.log(data);
+					},
+					error: function(data) {
+						console.log("ERROR");
+						console.log(data);
+					},
+					complete: function(data) {
+						console.log("COMPLETE");
+						console.log(data);
+					}
+				}); */
+				
+				
+				var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
+				xmlhttp.open("POST", "http://192.168.1.19:80/"); // Will need to change the IP Address to match the ESP8266's IP Address
+				var jsonString = JSON.stringify({pin: state.toUpperCase() + p});
+				xmlhttp.setRequestHeader("Content-type", "application/json; charset=UTF-8");		
+				// xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				xmlhttp.onload = function () {
+					if (this.readyState == XMLHttpRequest.DONE && this.status == 200) {
+						console.log(this.responseText);
+						// var obj = JSON.parse(this.responseText); 
+					} 
+				}
+				xmlhttp.send(jsonString);
+				// xmlhttp.send("pin=" + state.toUpperCase() + p);
+				
+
+			});
+		});
+	</script>
+	</body>
+</html>

@@ -1,0 +1,89 @@
+<html>
+	<head>
+		<title>ESP8266 LED Control</title>
+	</head>
+	<body>
+	
+	<!-- In the <button> tags below the ID attribute is the value sent to the arduino -->
+	
+	<!-- Toggle 11 and 12 not doing anything at the moment... -->
+	<button id="11" class="led">Toggle Pin 11</button> <!-- Button for pin 11 -->
+	<button id="12" class="led">Toggle Pin 12</button> <!-- Button for pin 12 -->
+	<button id="13" class="led">Toggle Pin 13</button> <!-- Button for pin 13 -->
+		
+	<script src="jquery.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$(".led").click(function(){
+				var p = $(this).attr('id'); // get id value (i.e. pin13, pin12, or pin11)
+				// Send HTTP GET request to the IP address with the parameter "pin" and value "p", then execute the function
+				// This works with, on the arduino side: httpHeader = "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=UTF-8\r\n"; 
+				/* $.get("http://192.168.1.22:80/", {pin:p})
+					.done(function(data) {
+						console.log( "Data Loaded: " + data );
+					}); // execute get request */
+					
+					
+				// This works with, on the arduino side: httpHeader = "HTTP/1.1 200 OK\r\nContent-Type: application/json; charset=UTF-8\r\n"; 
+				$.ajax({
+					type: "GET", 
+					url: "http://192.168.1.22:80/",
+					data: {pin:p},
+					dataType: "json",
+					success: function(data) {
+						console.log("SUCCESS")
+						console.log(data);
+					},
+					error: function(data) {
+						console.log("ERROR");
+						console.log(data);
+					},
+					complete: function(data) {
+						console.log("COMPLETE");
+						console.log(data);
+					}
+				});
+				
+				
+				/*
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() { 
+					if (this.readyState == 4 && this.status == 200) { 
+						console.log(this.responseText);
+						// var obj = JSON.parse(this.responseText); 
+						// document.getElementById("ledStatus").innerHTML = obj.data[0].dataValue; 
+						// document.getElementById("ledStatus").innerHTML = obj.data[1].ledState; 
+					} 
+				}; 
+				
+				xhttp.open("GET", "http://192.168.1.22:80?pin=13", true);
+				xhttp.send(); 
+				*/
+				
+				
+				/*
+				$.ajax({
+					type: "POST", 
+					url: "http://192.168.1.22:80/",
+					data: JSON.stringify({pin:p}),
+					dataType: "json",
+					success: function(data) {
+						console.log("SUCCESS")
+						console.log(data);
+					},
+					error: function(data) {
+						console.log("ERROR");
+						console.log(data);
+					},
+					complete: function(data) {
+						console.log("COMPLETE");
+						console.log(data);
+					}
+				});
+				*/
+				
+			});
+		});
+	</script>
+	</body>
+</html>
